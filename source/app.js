@@ -8,18 +8,20 @@ const Workers = require("./utilities/Workers.js");
 const color = require("./utilities/console-log-colors");
 const getAccounts = require("./routes/get-accounts.js");
 const postAccounts = require("./routes/post-accounts.js");
+const deleteAccounts = require("./routes/delete-accounts.js");
 const catchAll = require("./routes/catch-all");
 
 const app = express();
-app.use(express.json());
+app.use(express.json({ limit: "1mb" }));
 
 console.log(
   "OS uptime:",
   moment().startOf("day").seconds(os.uptime()).format("HH:mm:ss")
 );
 
-const port = process.env.PORT;
+const port = parseInt(process.env.PORT);
 const IP = process.env.IP;
+
 app.listen(port, IP, function () {
   const ipInColor = color.fg.Yellow + this.address().address + color.Reset;
   const portInColor = color.fg.Blue + this.address().port + color.Reset;
@@ -37,8 +39,9 @@ Workers.backupDatabaseRegularly(
 );
 
 /*
- * must be added down the bottom of the file, or the routing does not work
+ * must be placed down the bottom of the file for the routing to work
  */
 app.use("/accounts", getAccounts);
 app.use("/accounts", postAccounts);
+app.use("/accounts", deleteAccounts);
 app.use(catchAll);
