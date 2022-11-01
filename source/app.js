@@ -19,32 +19,35 @@ console.log(
 )
 
 function startDBServer() {
-  const port = parseInt(process.env.DATABASE_PORT)
-  const IP = process.env.IP
+  return new Promise((resolve) => {
+    const port = parseInt(process.env.DATABASE_PORT)
+    const IP = process.env.IP
 
-  app.listen(port, IP, function () {
-    const ipInColor = color.fg.Yellow + this.address().address + color.Reset
-    const portInColor = color.fg.Blue + this.address().port + color.Reset
-    console.log('Server has started on:', ipInColor + ':' + portInColor)
+    app.listen(port, IP, function () {
+      const ipInColor = color.fg.Yellow + this.address().address + color.Reset
+      const portInColor = color.fg.Blue + this.address().port + color.Reset
+      console.log('Server has started on:', ipInColor + ':' + portInColor)
+      resolve()
+    })
+
+    const databaseDirectory = process.env.DATABASE_DIRECTORY
+    fs.mkdirSync(databaseDirectory, { recursive: true })
+    const databaseBackupDirectory = process.env.DATABASE_BACKUP_DIRECTORY
+
+    Workers.backupDatabaseRegularly(
+      databaseDirectory,
+      databaseBackupDirectory,
+      86400000
+    )
+
+    /*
+     * must be placed down the bottom of the file for the routing to work
+     */
+    app.use('/accounts', getAccounts)
+    app.use('/accounts', postAccounts)
+    app.use('/accounts', deleteAccounts)
+    app.use(catchAll)
   })
-
-  const databaseDirectory = process.env.DATABASE_DIRECTORY
-  fs.mkdirSync(databaseDirectory, { recursive: true })
-  const databaseBackupDirectory = process.env.DATABASE_BACKUP_DIRECTORY
-
-  Workers.backupDatabaseRegularly(
-    databaseDirectory,
-    databaseBackupDirectory,
-    86400000
-  )
-
-  /*
-   * must be placed down the bottom of the file for the routing to work
-   */
-  app.use('/accounts', getAccounts)
-  app.use('/accounts', postAccounts)
-  app.use('/accounts', deleteAccounts)
-  app.use(catchAll)
 }
 
 module.exports = startDBServer
