@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "companion app to trading-bot",
   "main": "source/app.js",
+  "bin": "./bin/app.js",
   "scripts": {
     "start": "PORT=3739 node source/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
