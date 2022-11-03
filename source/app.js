@@ -1,7 +1,6 @@
 const os = require('os')
 const fs = require('fs')
 const moment = require('moment')
-const https = require('https')
 const express = require('express')
 const cors = require('cors')
 require('./utilities/console.log-replacement.js')
@@ -33,14 +32,11 @@ function startDBServer(
   databaseBackupDirectory
 ) {
   return new Promise((resolve) => {
-    https.createServer(app).listen(port, hostName, function () {
+    app.listen(port, hostName, function () {
       const hostNameInColor =
         color.fg.Yellow + this.address().address + color.Reset
       const portInColor = color.fg.Blue + this.address().port + color.Reset
-      console.log(
-        'Database server has started on:',
-        hostNameInColor + ':' + portInColor
-      )
+      console.log('Database server has started on:', hostNameInColor + ':' + portInColor)
       resolve()
     })
 
