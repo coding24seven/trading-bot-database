@@ -2,6 +2,7 @@ const os = require('os')
 const fs = require('fs')
 const moment = require('moment')
 const express = require('express')
+const cors = require('cors')
 require('./utilities/console.log-replacement.js')
 const Workers = require('./utilities/Workers.js')
 const color = require('./utilities/console-log-colors')
@@ -11,7 +12,13 @@ const deleteAccounts = require('./routes/delete-accounts.js')
 const catchAll = require('./routes/catch-all')
 
 const app = express()
+
 app.use(express.json({ limit: '1mb' }))
+
+corsOptions = {
+  origin: '*',
+}
+app.use(cors(corsOptions))
 
 console.log(
   'OS uptime:',
