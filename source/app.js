@@ -25,21 +25,22 @@ console.log(
   moment().startOf('day').seconds(os.uptime()).format('HH:mm:ss')
 )
 
-function startDBServer() {
+function startDBServer(
+  port,
+  hostName,
+  databaseDirectory,
+  databaseBackupDirectory
+) {
   return new Promise((resolve) => {
-    const port = parseInt(process.env.DATABASE_PORT)
-    const IP = process.env.IP
-
-    app.listen(port, IP, function () {
-      const ipInColor = color.fg.Yellow + this.address().address + color.Reset
+    app.listen(port, hostName, function () {
+      const hostNameInColor =
+        color.fg.Yellow + this.address().address + color.Reset
       const portInColor = color.fg.Blue + this.address().port + color.Reset
-      console.log('Server has started on:', ipInColor + ':' + portInColor)
+      console.log('Server has started on:', hostNameInColor + ':' + portInColor)
       resolve()
     })
 
-    const databaseDirectory = process.env.DATABASE_DIRECTORY
     fs.mkdirSync(databaseDirectory, { recursive: true })
-    const databaseBackupDirectory = process.env.DATABASE_BACKUP_DIRECTORY
 
     Workers.backupDatabaseRegularly(
       databaseDirectory,
