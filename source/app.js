@@ -36,7 +36,7 @@ function startDBServer(
       const hostNameInColor =
         color.fg.Yellow + this.address().address + color.Reset
       const portInColor = color.fg.Blue + this.address().port + color.Reset
-      console.log('Server has started on:', hostNameInColor + ':' + portInColor)
+      console.log('Database server has started on:', hostNameInColor + ':' + portInColor)
       resolve()
     })
 
