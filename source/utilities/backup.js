@@ -29,7 +29,8 @@ async function backupDatabase(databaseDirectory, databaseBackupDirectory) {
       fileNameWithoutExtension
     )}_${dateTime}${fileNameExtension}`
 
-    fs.copyFile(filePath, backupFilePath)
+    await fs.copyFile(filePath, backupFilePath)
+    console.log(`DATABASE BACKUP: ${backupFilePath} created`)
   })
 }
 
