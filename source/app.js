@@ -4,7 +4,7 @@ const moment = require('moment')
 const express = require('express')
 const cors = require('cors')
 require('./utilities/console.log-replacement.js')
-const Workers = require('./utilities/Workers.js')
+const backupDatabase = require('./utilities/backup.js')
 const color = require('./utilities/console-log-colors')
 const getAccounts = require('./routes/get-accounts.js')
 const postAccounts = require('./routes/post-accounts.js')
@@ -36,17 +36,18 @@ function startDBServer(
       const hostNameInColor =
         color.fg.Yellow + this.address().address + color.Reset
       const portInColor = color.fg.Blue + this.address().port + color.Reset
-      console.log('Database server has started on:', hostNameInColor + ':' + portInColor)
+      console.log(
+        'Database server has started on:',
+        hostNameInColor + ':' + portInColor
+      )
       resolve()
     })
 
     fs.mkdirSync(databaseDirectory, { recursive: true })
-
-    Workers.backupDatabaseRegularly(
-      databaseDirectory,
-      databaseBackupDirectory,
-      86400000
-    )
+    backupDatabase(databaseDirectory, databaseBackupDirectory)
+    setInterval(() => {
+      backupDatabase(databaseDirectory, databaseBackupDirectory)
+    }, 86400000)
 
     /*
      * must be placed down the bottom of the file for the routing to work
