@@ -6,7 +6,6 @@ async function backupDatabase(databaseDirectory, databaseBackupDirectory) {
   const fileNames = await fs.readdir(databaseDirectory)
 
   if (fileNames.length < 1) {
-    console.log('no files in database')
     return
   }
 
